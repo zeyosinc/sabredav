@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE ixml SYSTEM "http://www.ixmldev.com/schema/ixml.dtd">
+<ixml>
+
+	<!--
+		Provisioning service for SabreDAV
+
+		Add this as a service to your ZeyOS platform
+		and let it run at least once a day.
+	-->
+
+	<!-- Specify you SabreDAV URL and your security token here -->
+	<set var="url"></set>
+	<set var="token"></set>
+
+	<db:select var_result="usergroups" type="assoc">
+		<db:fields>
+			<db:field>u.ID</db:field>
+			<db:field>u.name</db:field>
+			<db:field>u.email</db:field>
+			<db:field>c.firstname</db:field>
+			<db:field>c.lastname</db:field>
+			<db:field>l.writable</db:field>
+			<db:field alias="group">g.name</db:field>
+		</db:fields>
+		<db:table alias="l">groups2users</db:table>
+		<db:join>
+			<db:inner alias="g" table="groups" field1="g.ID" field2="l.group" />
+			<db:inner alias="u" table="users" field1="u.ID" field2="l.user" />
+			<db:leftouter alias="c" table="contacts" field1="u.contact" field2="c.ID" />
+		</db:join>
+		<db:is field="u.activity">0</db:is>
+		<db:is field="g.activity">0</db:is>
+		<db:orderby>
+			<db:orderfield>g.name</db:orderfield>
+			<db:orderfield>u.name</db:orderfield>
+		</db:orderby>
+	</db:select>
+
+	<array var="body">
+		<item key="token">$token</item>
+		<array key="groups" />
+		<array key="users" />
+	</array>
+	<foreach var="usergroups" var_value="item">
+		<set var="body.groups[$item.group][$item.name]">$item.writable</set>
+		<is var="body.users[$item.ID]" type="non-array">
+			<unset var="item.writable" />
+			<unset var="item.group" />
+			<assign var="body.users[$item.ID]" var_source="item" />
+		</is>
+	</foreach>
+
+	<debug:output>
+		<http:request method="POST" url="$url">
+			<http:header>Content-Type: application/x-www-form-urlencoded</http:header>
+			<http:body>
+				<http:query var="body" />
+			</http:body>
+		</http:request>
+	</debug:output>
+
+</ixml>
