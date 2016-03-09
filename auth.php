@@ -41,8 +41,13 @@ class ZeyOS extends AbstractBasic {
 	 * @return bool
 	 */
 	protected function validateUserPass($username, $password) {
-		// Include trusted clients
-		if (defined('TRUSTED_SALT') && defined('TRUSTED_HOST') && TRUSTED_HOST != '' && isset($_SERVER['REMOTE_ADDR']) && $_SERVER['REMOTE_ADDR'] == TRUSTED_HOST && $password == md5(TRUSTED_SALT.$username)) {
+		// Authenticate through trusted salt
+		if (defined('TRUSTED_SALT') && $password == md5(TRUSTED_SALT.$username)) {
+			return true;
+		}
+
+		// Authenticate through trusted host
+		if (defined('TRUSTED_HOST') && TRUSTED_HOST != '' && isset($_SERVER['REMOTE_ADDR']) && $_SERVER['REMOTE_ADDR'] == TRUSTED_HOST) {
 			return true;
 		}
 
