@@ -16,5 +16,10 @@ define('ZEYOS_ID'   , 'myinstance');
 // You can override the baseUri here.
 define('BASE_URI'   , '');
 
+// Trusted Hosts may use the "Truested Password" feature, where the password
+// is a MD5 hash consisting of md5(TRUSTED_SALT.$username)
+define('TRUSTED_HOST' , '');
+define('TRUSTED_SALT' , '');
+
 // Token to secure the provisioning service
 define('AUTH_TOKEN' , 'MyRandomProvisioningToken');

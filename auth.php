@@ -41,6 +41,11 @@ class ZeyOS extends AbstractBasic {
 	 * @return bool
 	 */
 	protected function validateUserPass($username, $password) {
+		// Include trusted clients
+		if (defined('TRUSTED_SALT') && defined('TRUSTED_HOST') && TRUSTED_HOST != '' && isset($_SERVER['REMOTE_ADDR']) && $_SERVER['REMOTE_ADDR'] == TRUSTED_HOST && $password == md5(TRUSTED_SALT.$username)) {
+			return true;
+		}
+
 		$req = new \REST\Client('https://api.zeyos.com/'.$this->instanceId.'/1.0/auth');
 		$json = $req->post([
 			'user' => $username,
@@ -49,8 +54,9 @@ class ZeyOS extends AbstractBasic {
 		]);
 
 		$res = json_decode($json, true);
-		if (!isset($res['result']))
+		if (!isset($res['result'])) {
 			return false;
+		}
 
 		// Auto-provisioning
 		if ($this->principalBackend) {

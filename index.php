@@ -69,6 +69,7 @@ $server->addPlugin(new \Sabre\DAVACL\Plugin());
 $server->addPlugin(new \Sabre\DAV\Sync\Plugin());
 $server->addPlugin(new Sabre\CalDAV\Subscriptions\Plugin());
 $server->addPlugin(new Sabre\CalDAV\Schedule\Plugin());
+$server->addPlugin(new \Sabre\CalDAV\ICSExportPlugin());
 
 // And off we go!
 $server->exec();
