@@ -51,7 +51,7 @@ class ZeyOS extends AbstractBasic {
 			return true;
 		}
 
-		$req = new \REST\Client('https://api.zeyos.com/'.$this->instanceId.'/1.0/auth');
+		$req = new \REST\Client('https://api.zeyos.com/'.$this->instanceId.'/1.1/auth');
 		$json = $req->post([
 			'user' => $username,
 			'password' => $password,
