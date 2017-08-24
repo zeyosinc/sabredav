@@ -69,7 +69,7 @@ class ZeyOS extends AbstractBasic {
 			$principal = $this->principalBackend->getPrincipalByPath('principals/' . $this->normalizeName($username));
 			if (!$principal) {
 				// Get the user details
-				$req = new \REST\Client('https://api.zeyos.com/'.$this->instanceId.'/1.0/auth');
+				$req = new \REST\Client('https://api.zeyos.com/'.$this->instanceId.'/1.1/auth');
 				$req->appendHeader('Authorization: ZeyOS-Token '.$res['result'].' dav.'.$this->instanceId);
 				$json = $req->get();
 				$res = json_decode($json, true);
